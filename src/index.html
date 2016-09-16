@@ -1,0 +1,272 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script type="text/javascript">
+			// Your Client ID can be retrieved from your project in the Google
+			// Developer Console, https://console.developers.google.com
+			var CLIENT_ID = '$GOOGLE_SHEETS_CLIENT_ID';
+
+			var SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"];
+
+			/**
+			 * Check if current user has authorized this application.
+			 */
+			function checkAuth() {
+				gapi.auth.authorize(
+					{
+						'client_id': CLIENT_ID,
+						'scope': SCOPES.join(' '),
+						'immediate': true
+					}, handleAuthResult);
+			}
+
+			/**
+			 * Handle response from authorization server.
+			 *
+			 * @param {Object} authResult Authorization result.
+			 */
+			function handleAuthResult(authResult) {
+				var authorizeDiv = document.getElementById('authorize-div');
+				if (authResult && !authResult.error) {
+					// Hide auth UI, then load client library.
+					authorizeDiv.style.display = 'none';
+					loadSheetsApi();
+				} else {
+					// Show auth UI, allowing the user to initiate authorization by
+					// clicking authorize button.
+					authorizeDiv.style.display = 'block';
+				}
+			}
+
+			/**
+			 * Initiate auth flow in response to user clicking authorize button.
+			 *
+			 * @param {Event} event Button click event.
+			 */
+			function handleAuthClick(event) {
+				gapi.auth.authorize(
+					{client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+					handleAuthResult);
+				return false;
+			}
+
+			/**
+			 * Load Sheets API client library.
+			 */
+			function loadSheetsApi() {
+				var discoveryUrl =
+						'https://sheets.googleapis.com/$discovery/rest?version=v4';
+				gapi.client.load(discoveryUrl).then(printData);
+			}
+
+			/**
+			 * Print the names and majors of students in a sample spreadsheet:
+			 * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+			 */
+			function printData() {
+				gapi.client.sheets.spreadsheets.values.get({
+					spreadsheetId: '$GOOGLE_SHEETS_DOCUMENT_URL',
+					range: 'Input!A2:D',
+				}).then(function(response) {
+
+					var range = response.result;
+					if (range.values.length > 0) {
+						var weightData= [];
+						var lengthData = [];
+						var headCircumferenceData = [];
+						for (i = 0; i < range.values.length; i++) {
+							var row = range.values[i];
+							var dateParts = row[0].split('.');
+							var utc = Date.UTC(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+
+							if (row[1]) {
+								weightData.push([utc, parseFloat(row[1].replace(',','.'))]);
+							}
+							if (row[2]) {
+								lengthData.push([utc, parseFloat(row[2].replace(',','.'))]);
+							}
+							if (row[3]) {
+								headCircumferenceData.push([utc, parseFloat(row[3].replace(',','.'))]);
+							}
+						}
+						drawWeightChart(weightData);
+						drawLengthChart(lengthData);
+					}
+				}, function(response) {
+					alert('Error: ' + response.result.error.message);
+				});
+			}
+
+			function drawWeightChart(data) {
+				Highcharts.chart('weightChart', {
+					chart: {
+							type: 'spline'
+					},
+					title: {
+						text: 'Vekt'
+					},
+					xAxis: {
+							type: 'datetime',
+							title: {
+									text: 'Dato'
+							}
+					},
+					yAxis: {
+							title: {
+									text: 'Vekt (kg)'
+							},
+							min: 3
+					},
+					tooltip: {
+							headerFormat: '<b>{series.name}</b><br>',
+							pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+					},
+					plotOptions: {
+							spline: {
+									marker: {
+											enabled: true
+									}
+							}
+					},
+					series: [{
+						name: 'Child',
+						data: data
+					}]
+				})
+			}
+
+			function drawLengthChart(data) {
+				Highcharts.chart('lengthChart', {
+					chart: {
+							type: 'spline'
+					},
+					title: {
+						text: 'Lengde'
+					},
+					xAxis: {
+							type: 'datetime',
+							title: {
+									text: 'Dato'
+							}
+					},
+					yAxis: {
+							title: {
+									text: 'Lengde (m)'
+							},
+					},
+					tooltip: {
+							headerFormat: '<b>{series.name}</b><br>',
+							pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+					},
+					plotOptions: {
+							spline: {
+									marker: {
+											enabled: true
+									}
+							}
+					},
+					series: [{
+						name: 'Child',
+						data: data
+					}]
+				})
+			}
+
+
+
+		</script>
+		<script src="https://apis.google.com/js/client.js?onload=checkAuth">
+		</script>
+
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: system, -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
+				font-size: 13px;
+			}
+
+			header {
+				display: flex;
+				align-items: center;
+
+				color: #fff;
+				background: #E91E63;
+				height: 64px;
+				padding: 0 20px;
+
+				box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+			}
+
+			header h1 {
+				font-size: 20px;
+				line-height: 20px;
+				font-weight: normal;
+			}
+
+			.md-button {
+				display: inline-block;
+				position: relative;
+				cursor: pointer;
+				min-height: 36px;
+				min-width: 88px;
+				line-height: 36px;
+				vertical-align: middle;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				-ms-grid-row-align: center;
+				align-items: center;
+				text-align: center;
+				border-radius: 3px;
+				box-sizing: border-box;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+				border: 0;
+				padding: 0 6px;
+				margin: 6px 8px;
+				white-space: nowrap;
+				text-transform: uppercase;
+				font-weight: 500;
+				font-size: 14px;
+				font-style: inherit;
+				font-variant: inherit;
+				font-family: inherit;
+				text-decoration: none;
+				color: rgb(33,33,33);
+				background-color: rgb(250,250,250);
+			}
+
+			.md-button.md-raised {
+				box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+			}
+
+			.md-primary {
+				color: #fff;
+				background-color: #E91E63;
+			}
+
+			.md-accent {
+				color: #fff;
+				background-color: #7C4DFF;
+			}
+		</style>
+	</head>
+	<body>
+		<header><h1>Child</h1></header>
+
+		<div id="authorize-div" style="display: none; max-width: 600px; text-align: center; padding: 16px; margin: 0 auto;">
+			<p>Du må godkjenne tilgang til Google Sheets API for å hente statistikken.</p>
+
+			<button id="authorize-button" class="md-button md-raised md-primary" onclick="handleAuthClick(event)">
+				Start godkjenning
+			</button>
+		</div>
+
+		<div id="weightChart"></div>
+		<div id="lengthChart"></div>
+		<div id="headCircumferenceChart"></div>
+	</body>
+</html>

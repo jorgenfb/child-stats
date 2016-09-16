@@ -1,0 +1,14 @@
+# Ignore managed dependencies
+node_modules
+
+# Ignore distribution files
+dist
+
+# Ignore log files
+*.log
+
+# Ignore local config
+.app-config.json
+
+# Ignore firebase config
+.firebaserc
