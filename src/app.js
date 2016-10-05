@@ -1,6 +1,4 @@
 // 
-require('file?name=index.html!./index.html');
-require('file?name=manifest.json!./manifest.json');
 // check cached data
 // check if authenticated
 // get updated data

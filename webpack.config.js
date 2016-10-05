@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const openBrowserPlugin = require('open-browser-webpack-plugin');
+const copyWebpackPlugin = require('copy-webpack-plugin')
 
 const APP_CONFIG = require('./.app-config.json');
 
@@ -69,11 +70,17 @@ module.exports = {
 		]
 	},
 	plugins:[
+		new copyWebpackPlugin([
+				{ from: 'src/images/baby-icon.svg', to: 'images/baby-icon.svg'},
+				{ from: 'src/images/baby-icon.png', to: 'images/baby-icon.png'},
+				{ from: 'src/manifest.json'},
+				{ from: 'src/index.html'}
+		]),
 		new webpack.HotModuleReplacementPlugin({
 			multiStep: true
 		}),
 		new openBrowserPlugin({
-			url: `http://${options.host}:${options.port}`
+			url: `https://${options.host}:${options.port}`
 		})
 	]
 };
