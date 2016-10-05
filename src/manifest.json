@@ -20,6 +20,5 @@
 		}	
 	],
 	"start_url": "/index.html?homescreen=1",
-	"display": "standalone",
-	"orientation": "landscape"
+	"display": "standalone"
 }
