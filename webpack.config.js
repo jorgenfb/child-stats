@@ -83,3 +83,12 @@ module.exports = {
 		})
 	]
 };
+
+const prod = process.argv.indexOf('--minimize') !== -1;
+if (prod) {
+	module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({
+		compress: {
+			unused: false
+		}
+	}));
+}

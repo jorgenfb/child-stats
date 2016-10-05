@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "prebuild": "rimraf dist",
-    "build": "webpack -p"
+    "build": "webpack --minimize"
   },
   "keywords": [],
   "author": "Jørgen Borgesen",
