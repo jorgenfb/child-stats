@@ -71,8 +71,7 @@ module.exports = {
 	},
 	plugins:[
 		new copyWebpackPlugin([
-				{ from: 'src/images/baby-icon.svg', to: 'images/baby-icon.svg'},
-				{ from: 'src/images/baby-icon.png', to: 'images/baby-icon.png'},
+				{ from: 'src/images', to: 'images'},
 				{ from: 'src/manifest.json'}
 		]),
 		new webpack.HotModuleReplacementPlugin({
