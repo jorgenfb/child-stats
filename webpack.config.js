@@ -73,8 +73,7 @@ module.exports = {
 		new copyWebpackPlugin([
 				{ from: 'src/images/baby-icon.svg', to: 'images/baby-icon.svg'},
 				{ from: 'src/images/baby-icon.png', to: 'images/baby-icon.png'},
-				{ from: 'src/manifest.json'},
-				{ from: 'src/index.html'}
+				{ from: 'src/manifest.json'}
 		]),
 		new webpack.HotModuleReplacementPlugin({
 			multiStep: true

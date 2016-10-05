@@ -1,4 +1,6 @@
-// 
+// Include as part of build pipe to enable us to do string replacement
+require('file?name=index.html!./index.html');
+
 // check cached data
 // check if authenticated
 // get updated data
