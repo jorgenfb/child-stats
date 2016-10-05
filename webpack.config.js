@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const htmlPlugin = require('html-webpack-plugin');
 const openBrowserPlugin = require('open-browser-webpack-plugin');
 
 const APP_CONFIG = require('./.app-config.json');
@@ -18,34 +17,31 @@ const options = {
 
 module.exports = {
 	entry: {
-		app: PATHS.app
+		app: path.join(PATHS.app, 'app')
 	},
 	output: {
 		path: PATHS.build,
 		filename: 'bundle.js'
 	},
 	devServer: {
-			historyApiFallback: true,
-			hot: true,
-			https: true,
-			inline: true,
-			stats: 'errors-only',
-			host: options.host, // Defaults to `localhost`
-			port: options.port // Defaults to 8080
-		},
+		historyApiFallback: true,
+		hot: true,
+		https: true,
+		inline: true,
+		stats: 'errors-only',
+		host: options.host, // Defaults to `localhost`
+		port: options.port // Defaults to 8080
+	},
 	module: {
 		loaders: [
 			{
-				test: /index.html$/,
-				loader: 'html',
-			},
-			{
-				test: /index.html$/,
+				test: /(app.js|index.html)/,
 				loader: 'string-replace',
 				query: {
 					multiple: [
-						{search: '$GOOGLE_SHEETS_CLIENT_ID', replace: APP_CONFIG.GOOGLE_SHEETS_CLIENT_ID},
-						{search: '$GOOGLE_SHEETS_DOCUMENT_URL', replace: APP_CONFIG.GOOGLE_SHEETS_DOCUMENT_URL}
+						{search: 'GOOGLE_SHEETS_CLIENT_ID', replace: APP_CONFIG.GOOGLE_SHEETS_CLIENT_ID},
+						{search: 'GOOGLE_SHEETS_DOCUMENT_URL', replace: APP_CONFIG.GOOGLE_SHEETS_DOCUMENT_URL},
+						{search: 'CHILD_NAME', replace: APP_CONFIG.CHILD_NAME, flags: 'g'}
 					]
 				}
 			},
@@ -74,11 +70,7 @@ module.exports = {
 	},
 	plugins:[
 		new webpack.HotModuleReplacementPlugin({
-				multiStep: true
-		}),
-		new htmlPlugin({
-			template:path.join(PATHS.app,'index.html'),
-			inject:'body'
+			multiStep: true
 		}),
 		new openBrowserPlugin({
 			url: `http://${options.host}:${options.port}`
