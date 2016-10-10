@@ -5,7 +5,7 @@
 		<link rel="manifest" href="/manifest.json">
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="bundle.js"></script>
-		<script src="https://apis.google.com/js/client.js?onload=checkAuth">
+		<script src="https://apis.google.com/js/client.js?onload=gApiLoaded">
 		</script>
 
 		<style>
@@ -89,13 +89,12 @@
 		<div id="authorize-div" style="display: none; max-width: 600px; text-align: center; padding: 16px; margin: 0 auto;">
 			<p>Du må godkjenne tilgang til Google Sheets API for å hente statistikken.</p>
 
-			<button id="authorize-button" class="md-button md-raised md-primary" onclick="handleAuthClick(event)">
+			<button id="authorize-button" class="md-button md-raised md-primary">
 				Start godkjenning
 			</button>
 		</div>
 
 		<div id="weightChart"></div>
-		<div id="lengthChart"></div>
-		<div id="headCircumferenceChart"></div>
+		<div id="heightChart"></div>
 	</body>
 </html>

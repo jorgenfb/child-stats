@@ -36,7 +36,7 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				test: /(app.js|index.html)/,
+				test: /(index.ctrl.js|index.html|sheets.service.js)/,
 				loader: 'string-replace',
 				query: {
 					multiple: [
@@ -82,12 +82,3 @@ module.exports = {
 		})
 	]
 };
-
-const prod = process.argv.indexOf('--minimize') !== -1;
-if (prod) {
-	module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({
-		compress: {
-			unused: false
-		}
-	}));
-}
